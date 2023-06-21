@@ -1,4 +1,6 @@
 let modalQt = 1;
+let cart = [];
+let modalkey = 0;
 
 const c = (el) => document.querySelector(el);
 const cs = (el) => document.querySelectorAll(el);
@@ -10,7 +12,7 @@ modeloJson.map((item, index) => {
 
     modeloItem.setAttribute('data-key', index);
 
-    modeloItem.querySelector('.modelo-item-img img').src = item.img; 
+    modeloItem.querySelector('.modelo-item-img img').src = item.img;
     modeloItem.querySelector(".modelo-item-name").innerHTML = item.name;
     modeloItem.querySelector('.modelo-item-desc').innerHTML = item.description;
     modeloItem.querySelector('.modelo-item-price').innerHTML = `R$ ${item.price.toFixed(2)}`;
@@ -27,11 +29,11 @@ modeloJson.map((item, index) => {
         c('.modeloInfo-actualPrice').innerHTML = `R$ ${modeloJson[key].price.toFixed(2)}`
         c('.modeloInfo-size.selected').classList.remove("selected");
 
-        cs('.modeloInfo-size').forEach((size, sizeIndex) =>{
-           if (sizeIndex == 0){
-               size.classList.add("selected");
+        cs('.modeloInfo-size').forEach((size, sizeIndex) => {
+            if (sizeIndex == 0) {
+                size.classList.add("selected");
 
-           };
+            };
             size.querySelector('span').innerHTML = modeloJson[key].sizes[sizeIndex];
         });
 
@@ -39,7 +41,7 @@ modeloJson.map((item, index) => {
         c(".modeloWindowArea").style.display = 0;
         c('.modeloWindowArea').style.display = 'flex';
 
-        setTimeout(() =>{
+        setTimeout(() => {
             c(".modeloWindowArea").style.opacity = 1;
         }, 500);
     });
@@ -48,38 +50,53 @@ modeloJson.map((item, index) => {
 });
 
 //eventos do modal
-function closeModal(){
+function closeModal() {
     c(".modeloWindowArea").style.display = 0;
-    setTimeout(()=>{
+    setTimeout(() => {
         c(".modeloWindowArea").style.display = "none";
     }, 500);
 }
 
-cs(".modeloInfo-cancelButton, .modeloInfo-cancelMobileButton").forEach((item)=>{
+cs(".modeloInfo-cancelButton, .modeloInfo-cancelMobileButton").forEach((item) => {
     item.addEventListener("click", closeModal);
 });
 
 //botão qt mais
-c(".modeloInfo-qtmais").addEventListener("click", ()=>{
+c(".modeloInfo-qtmais").addEventListener("click", () => {
     modalQt++;
     //atualizo o valor no HTML
     c(".modeloInfo-qt").innerHTML = modalQt;
 });
 
 //botão qt menos
-c(".modeloInfo-qtmenos").addEventListener("click", ()=>{
+c(".modeloInfo-qtmenos").addEventListener("click", () => {
     if (modalQt > 1)
-    modalQt--;
+        modalQt--;
     c(".modeloInfo-qt").innerHTML = modalQt;
 });
 
 //tamanhos
-cs(".modeloInfo-size").forEach((size, sizeIndex)=>{
+cs(".modeloInfo-size").forEach((size, sizeIndex) => {
     //ao clicar em um item
-    size.addEventListener("click", () =>{
+    size.addEventListener("click", () => {
         //desmarca tudo
         c(".modeloInfo-size.selected").classList.remove("selected");
         //adiciono a marcação
         size.classList.add("selected");
     });
 });
+
+//add ao carrinho
+c('.modeloInfo-addButton').addEventListener('click', () => {
+    //reunir as informações: modelo, tamanho, qtd
+    let size = c('.modeloInfo-size').getAttribute('data-key');
+    //add ao carrinho
+    cart.push({
+        id: modeloJson[modalkey].id,
+        size,
+        qt: modalQt,
+    });
+
+    closeModal();
+})
+
